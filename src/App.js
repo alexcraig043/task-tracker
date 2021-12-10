@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom'
 
 import Header from './components/Header'
 import Tasks from './components/Tasks'
@@ -8,7 +8,7 @@ import Footer from './components/Footer'
 import About from './components/About'
 
 function App() {
-  const [showAddTask, setShowAddTask] = useState(true)
+  const [showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState([])
 
   useEffect(() => {
@@ -21,7 +21,7 @@ function App() {
 
 // Fetch Tasks
 const fetchTasks = async () => {
-  const res = await fetch('http://localhost:5000/tasks')
+  const res = await fetch('http://localhost:3000/tasks')
   const data = await res.json()
 
   return data
@@ -29,7 +29,7 @@ const fetchTasks = async () => {
 
 // Fetch Task
 const fetchTask = async (id) => {
-  const res = await fetch(`http://localhost:5000/tasks/${id}`)
+  const res = await fetch(`http://localhost:3000/tasks/${id}`)
   const data = await res.json()
 
   return data
@@ -37,7 +37,7 @@ const fetchTask = async (id) => {
 
 // Add Tasks
 const addTask = async (task) => {
-  const res = await fetch('http://localhost:5000/tasks', {
+  const res = await fetch('http://localhost:3000/tasks', {
     method: 'POST',
     headers: {
       'Content-type': 'application/json'
@@ -56,7 +56,7 @@ const addTask = async (task) => {
 
 // Delete Task
 const deleteTask = async (id) => {
-  await fetch(`http://localhost:5000/tasks/${id}`, {
+  await fetch(`http://localhost:3000/tasks/${id}`, {
     method: 'DELETE'
   })
 
@@ -68,7 +68,7 @@ const toggleReminder = async (id) => {
   const taskToToggle = await fetchTask(id)
   const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder }
 
-  const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+  const res = await fetch(`http://localhost:3000/tasks/${id}`, {
     method:'PUT',
     headers: {
       "Content-type": 'application/json'
@@ -89,6 +89,7 @@ const toggleReminder = async (id) => {
         showAdd={showAddTask} 
       />
       <Routes>
+      <Route exact path='/task-tracker' element={<Navigate to ='/' />} />
       <Route path='/' exact element={
         <> 
           {showAddTask && <AddTask onAdd={addTask}/>}
